@@ -1,0 +1,42 @@
+import discord
+import os
+from discord.ext  import commands
+import random
+
+description='Este es un programa donde vinculamos a discord con studio code para lanzar imagenes:'
+intents=discord. Intents.default()
+intents.members=True
+intents.message_content=True
+
+bot=commands.Bot(command_prefix="$", description=description, intents=intents)
+img_name_pro = os.listdir('imagenpro')
+
+@bot.event
+async def on_ready():
+    print(f'logeado como {bot.user} (ID: {bot.user.id})')
+
+@bot.command()
+async def imagenpro(ctx):
+    if ctx.message.author == bot.user:
+        return
+
+    img_to_send_pro = random.choice(img_name_pro)
+    with open(f'Imagenpro/{img_to_send_pro}', 'rb') as f:
+        picture = discord.File(f)
+        await ctx.send(file=picture)
+
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+
+@bot.command('duck')
+async def duck(ctx):
+    '''Una vez que llamamos al comando duck, 
+    el programa llama a la función get_duck_image_url'''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
+
+bot.run('MTI0ODk5MTU4MjIyNTQzNjgwNA.Gv3ZFZ.SWi1fkSRZ7S-3a_Cj2qHBetFN74Px1k26zyHbE')
